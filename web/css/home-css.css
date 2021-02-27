@@ -1,0 +1,42 @@
+
+#form-title{
+    font-size: 25px;
+    color:#000080;
+    font-weight: bold;
+    margin: 20px 0px; 
+
+
+}
+.form-container{
+    margin: 50px 40px;
+}
+
+
+#userName,#password,#email{
+    background-color: #faffbd;
+    font-weight: 600;
+   
+}
+#password{
+    
+}
+
+
+
+h5{
+    margin: 0;
+}
+.mess{
+    height: 50px;
+    color: red;
+    margin: 0;
+}
+
+.form-item{
+    margin-bottom: 10px
+}
+
+.mess-error{
+    margin: 40px 50px;
+}
+
