@@ -74,6 +74,7 @@ public class TakeQuizServlet extends HttpServlet {
                 //assign questions to calculate result after
 
                 request.setAttribute("questions", this.questions);
+                request.setAttribute("quantityOfQues", String.format("%02d", number));
                 request.getRequestDispatcher("view/takeQuiz.jsp").forward(request, response);
 
                 startTime = System.currentTimeMillis();
@@ -97,6 +98,7 @@ public class TakeQuizServlet extends HttpServlet {
             throws ServletException, IOException {
         try {
             String result = request.getParameter("result");
+            System.out.println("result=" + result);
             long currentTime = System.currentTimeMillis();
             //get current time when user sent result of quiz to server
             long takingTime = currentTime - startTime;

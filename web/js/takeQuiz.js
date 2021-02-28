@@ -1,87 +1,96 @@
 
 const questions = document.querySelectorAll(".ques");
-const checkTimeForm = document.getElementById("checkTimeForm");
+const resultForm = document.getElementById("result-form");
 const timeInput = document.getElementById("timeInput");
 const result = document.getElementById("result");
 const timeDisplay = document.getElementById("time");
 const nextBtn = document.getElementById("nextBtn");
 
-let index = 1;
-//set default index is 1
-let rs = [];
+let currentIndex = 1;
+//set default currentIndex is 1
 
+function startTimer(duration, timeDisplay) {
 
-
-function startTimer(duration, display) {
-    let timer = duration;
     let minutes, seconds;
-    
+
     setInterval(function () {
-        
-        minutes = parseInt(timer / 60, 10);
-        seconds = parseInt(timer % 60, 10);
+        //this function will excecute after 1000 millliseconds
+
+        minutes = parseInt(duration / 60, 10);
+        //minutes equal timer divide to 60
+        seconds = parseInt(duration % 60, 10);
+        //seconds equal timer modulo to 60
 
         minutes = minutes < 10 ? "0" + minutes : minutes;
+        //append to 0 before minutes if it less than 10
         seconds = seconds < 10 ? "0" + seconds : seconds;
+        //append to 0 before seconds if it less than 10
 
-        display.textContent = minutes + ":" + seconds;
+        timeDisplay.textContent = minutes + ":" + seconds;
+        //display time
 
-        if (--timer < 0) {
-            display.textContent = "00:00";
-            addResult();
+        if (duration === 0) {
+            //duration equal 0 then submit result then return
             submitResult();
             return;
         }
+
+        duration--;
+        //duration decrease to 1 second
+
     }, 1000);
 }
 
 window.onload = function () {
 
     questions[0].style.display = "block";
-
-    timeDisplay.textContent = (questions.length >= 10)
-            ? questions.length + ":00"
-            : "0" + questions.length + ":00";
-
+    //display block the first question when web loaded all the resource  
     let duration = (60 * questions.length) - 1;
-    
+    //duration is decreased to 1 cause the timedisplay has already displayed the first second
     startTimer(duration, timeDisplay);
+    //start timer 
 };
 
-function addResult() {
-    let checkedValue = null;
-    let inputElements = document.getElementsByClassName('op');
-    for (let i = 0; inputElements[i]; ++i) {
-        if (inputElements[i].checked) {
-            checkedValue = inputElements[i].value;
-            rs.push(checkedValue);
+function getResult() {
+    let rs = "";
+    let inputAnswers = document.querySelectorAll('.op');
+    //get all input checkbox of answers
+    for (let i = 0; i < inputAnswers.length; i++) {
+        if (inputAnswers[i].checked) {
+            //if input checkbox of answers was checked then append id of
+            //that answer to rs string
+            rs += inputAnswers[i].value + " ";
         }
     }
+    return rs;
 }
 
 function submitResult() {
-    let tempRs = "";
-    for (let i = 0; i < rs.length; i++) {
-        tempRs += rs[i] + " ";
-    }
-    result.value = tempRs;
-    
-    checkTimeForm.submit();
+    result.value = getResult();
+    //assign value of result of all checkbox input to result input of
+    //hidden form the submit to server
+    resultForm.submit();
+
 }
 
-
-
 nextBtn.onclick = function () {
-    if (index === questions.length) {
-        addResult();
+    if (currentIndex === questions.length) {
+        //currentIndex is equal to position of last question then submit the hidden form
         submitResult();
     } else {
-        if (index === questions.length - 1) {
+        //currentIndex is not equal to position of last question 
+        //then set display style of next and previous question div
+        if (currentIndex === questions.length - 1) {
+            //currentIndex is equal to position of before last question 
+            //then change text of nextBtn to finish
             nextBtn.textContent = "Finish";
         }
-        questions[index - 1].style.display = "none";
-        questions[index].style.display = "block";
-        ++index;
+        questions[currentIndex - 1].style.display = "none";
+        //set style of the previous question div to none
+        questions[currentIndex].style.display = "block";
+        //set style of the next question div to block
+        ++currentIndex;
+        //currentIndex have to increase to 1 after the nextBtn is clicked        
     }
 }
 
