@@ -22,7 +22,7 @@
                 <h3 class="label">Welcome </h3> 
                 <span class="infor">${sessionScope.user.getUserName()}</span> 
                 <h3 id="number-ques" class="label">Enter number of Questions</h3><br>
-                <form id="number-form" class="form" method="get" action="../J3LP0001/take-quiz">
+                <form id="number-form" class="form" method="get" action="take-quiz">
                     <div class="form-item">
                         <input min="1" max="${requestScope.maxQuiz}" type="number" id="number-input" name="number"/>
                     </div>

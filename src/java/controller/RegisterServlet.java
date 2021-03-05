@@ -7,6 +7,9 @@ package controller;
 
 import dao.UserDao;
 import java.io.IOException;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -46,7 +49,8 @@ public class RegisterServlet extends HttpServlet {
             throws ServletException, IOException {
         try {
             request.getRequestDispatcher("view/register.jsp").forward(request, response);
-        } catch (IOException e) {
+        } catch (Exception e) {
+            request.setAttribute("error", e);
             request.getRequestDispatcher("view/error.jsp").forward(request, response);
         }
 
@@ -66,7 +70,7 @@ public class RegisterServlet extends HttpServlet {
         try {
             UserDao uDao = new UserDao();
             String userName = request.getParameter("userName");
-            if (uDao.checkExist(userName)) {
+            if (uDao.checkUsernameExist(userName)) {
                 //username has exsited then return error to client
                 request.setAttribute("mess", "Username has already existed!");
                 request.getRequestDispatcher("view/register.jsp").forward(request, response);
@@ -80,7 +84,8 @@ public class RegisterServlet extends HttpServlet {
                 response.sendRedirect("home");
             }
 
-        } catch (IOException e) {
+        } catch (Exception e) {
+            request.setAttribute("error", e);
             request.getRequestDispatcher("view/error.jsp").forward(request, response);
         }
     }

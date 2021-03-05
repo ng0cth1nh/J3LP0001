@@ -46,7 +46,8 @@ public class LogoutServlet extends HttpServlet {
         try {
             request.getSession(false).invalidate();
             response.sendRedirect("home");
-        } catch (IOException e) {
+        } catch (Exception e) {
+            request.setAttribute("error", e);
             request.getRequestDispatcher("view/error.jsp").forward(request, response);
         }
     }

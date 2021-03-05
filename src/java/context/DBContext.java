@@ -7,6 +7,8 @@ package context;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -23,7 +25,7 @@ public class DBContext {
     InitialContext init;
     Context context;
     String dbName, serverName, portNumber, username, password;
-    
+
     public Connection getConnection() {
         Connection con = null;
         try {
@@ -46,8 +48,29 @@ public class DBContext {
             con = DriverManager.getConnection(url.toString(), username, password);
         } catch (ClassNotFoundException | SQLException | NamingException ex) {
             Logger.getLogger(DBContext.class.getName()).log(Level.SEVERE, null, ex);
-        }        
+        }
         return con;
+    }
+
+    public void closeConnection(Connection con, PreparedStatement ps, ResultSet rs) throws SQLException {
+        if (rs != null && !rs.isClosed()) {
+            rs.close();
+        }
+        if (ps != null && !ps.isClosed()) {
+            ps.close();
+        }
+        if (con != null && !con.isClosed()) {
+            con.close();
+        }
+    }
+
+    public void closeConnection(Connection con, PreparedStatement ps) throws SQLException {
+        if (ps != null && !ps.isClosed()) {
+            ps.close();
+        }
+        if (con != null && !con.isClosed()) {
+            con.close();
+        }
     }
 
 }

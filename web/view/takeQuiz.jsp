@@ -13,6 +13,7 @@
         <title>Take Quiz</title>
         <link href="css/take-quiz.css" rel="stylesheet" type="text/css"/>        
         <link href="css/base.css" rel="stylesheet" type="text/css"/>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     </head>
     <body>
         <div class="container">
@@ -45,7 +46,7 @@
                     <button class="button" id="nextBtn">Next</button>
                 </div>
             </div>
-            <form id="result-form" type="hidden" method="post" action="../J3LP0001/take-quiz">
+            <form id="result-form" type="hidden" method="post" action="take-quiz">
                 <input id="result" name="result" type="hidden"/>                            
             </form>  
         </div>

@@ -9,11 +9,8 @@ import context.DBContext;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import model.Answer;
 import model.Question;
 
@@ -30,8 +27,9 @@ public class QuestionDao extends DBContext {
      * @param pageIndex
      * @param size
      * @return questions of corresponding page
+     * @throws java.lang.Exception
      */
-    public ArrayList<Question> getQuestions(int pageIndex, int size) {
+    public ArrayList<Question> getQuestions(int pageIndex, int size) throws Exception {
 
         ArrayList<Question> list = null;
         Connection con = null;
@@ -44,9 +42,9 @@ public class QuestionDao extends DBContext {
                     + "DECLARE @PageSize int;\n"
                     + "SET @PageIndex = ?;\n"
                     + "SET @PageSize = ?;\n"
-                    + ";With ranked AS\n"
+                    + "With ranked AS\n"
                     + "(\n"
-                    + "   SELECT ROW_NUMBER() OVER(ORDER BY qid asc) AS RowNum,  *\n"
+                    + "   SELECT ROW_NUMBER() OVER(ORDER BY qid) AS RowNum,  *\n"
                     + "   FROM Question\n"
                     + ")\n"
                     + "SELECT *\n"
@@ -64,19 +62,10 @@ public class QuestionDao extends DBContext {
                         rs.getString("content"),
                         rs.getDate("created")));
             }
-        } catch (SQLException ex) {
-            Logger.getLogger(QuestionDao.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            throw ex;
         } finally {
-            if (con != null || st != null || rs != null) {
-                //close connection before return 
-                try {
-                    rs.close();
-                    st.close();
-                    con.close();
-                } catch (SQLException e) {
-                    Logger.getLogger(QuestionDao.class.getName()).log(Level.SEVERE, null, e);
-                }
-            }
+            closeConnection(con, st, rs);
         }
         return list;
     }
@@ -84,8 +73,9 @@ public class QuestionDao extends DBContext {
     /**
      *
      * @return quantity of all questions
+     * @throws java.lang.Exception
      */
-    public int countQuestion() {
+    public int countQuestion() throws Exception {
         int num = 0;
         Connection con = null;
         PreparedStatement st = null;
@@ -100,19 +90,10 @@ public class QuestionDao extends DBContext {
                 //loop to each item of the result set
                 num = rs.getInt(1);
             }
-        } catch (SQLException ex) {
-            Logger.getLogger(QuestionDao.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            throw ex;
         } finally {
-            if (con != null || st != null || rs != null) {
-                //close connection before return 
-                try {
-                    rs.close();
-                    st.close();
-                    con.close();
-                } catch (SQLException e) {
-                    Logger.getLogger(QuestionDao.class.getName()).log(Level.SEVERE, null, e);
-                }
-            }
+            closeConnection(con, st, rs);
         }
         return num;
     }
@@ -121,8 +102,9 @@ public class QuestionDao extends DBContext {
      *
      * @param pageSize
      * @return quantity of all page with corresponding page size
+     * @throws java.lang.Exception
      */
-    public int getTotalPage(int pageSize) {
+    public int getTotalPage(int pageSize) throws Exception {
         int total = countQuestion();
         if (total % pageSize == 0) {
             //return number of page when total % pageSize
@@ -137,8 +119,9 @@ public class QuestionDao extends DBContext {
      *
      * @param id
      * @return whether id is duplicate in database
+     * @throws java.lang.Exception
      */
-    public boolean checkQuestionId(String id) {
+    public boolean checkQuestionId(String id) throws Exception {
 
         boolean result = false;
         Connection con = null;
@@ -155,19 +138,10 @@ public class QuestionDao extends DBContext {
                 //loop to each item of the result set
                 result = true;
             }
-        } catch (SQLException ex) {
-            Logger.getLogger(QuestionDao.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            throw ex;
         } finally {
-            if (con != null || st != null || rs != null) {
-                //close connection before return 
-                try {
-                    rs.close();
-                    st.close();
-                    con.close();
-                } catch (SQLException e) {
-                    Logger.getLogger(QuestionDao.class.getName()).log(Level.SEVERE, null, e);
-                }
-            }
+            closeConnection(con, st, rs);
         }
         return result;
     }
@@ -176,8 +150,9 @@ public class QuestionDao extends DBContext {
      *
      * @param number
      * @return random answer with corresponding number
+     * @throws java.lang.Exception
      */
-    public ArrayList<Question> getQuestions(int number) {
+    public ArrayList<Question> getQuestions(int number) throws Exception {
 
         ArrayList<Question> list = null;
         ArrayList<Answer> answerList = null;
@@ -187,8 +162,8 @@ public class QuestionDao extends DBContext {
 
         try {
             list = new ArrayList<>();
-            String sql = "SELECT TOP (?) * FROM Question\n"
-                    + "ORDER BY NEWID()";
+            String sql = "SELECT TOP (?) NEWID() as rowId, * FROM Question\n"
+                    + "ORDER BY rowId";
 
             con = getConnection();
             st = con.prepareStatement(sql);
@@ -197,26 +172,17 @@ public class QuestionDao extends DBContext {
             while (rs.next()) {
                 //loop to each item of the result set
                 String qid = rs.getString("qid");
-                Question q = new Question(qid, rs.getString(3), rs.getDate("created"));
+                Question q = new Question(qid, rs.getString("content"), rs.getDate("created"));
                 answerList = aDao.getAnswers(qid);
-                //get all answers of that question
+                //get all answers of that question follow qid
                 q.setAnswers(answerList);
                 list.add(q);
             }
 
-        } catch (SQLException ex) {
-            Logger.getLogger(QuestionDao.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            throw ex;
         } finally {
-            if (con != null || st != null || rs != null) {
-                //close connection before return 
-                try {
-                    rs.close();
-                    st.close();
-                    con.close();
-                } catch (SQLException e) {
-                    Logger.getLogger(QuestionDao.class.getName()).log(Level.SEVERE, null, e);
-                }
-            }
+            closeConnection(con, st, rs);
         }
         return list;
     }
@@ -224,8 +190,9 @@ public class QuestionDao extends DBContext {
     /**
      *
      * @param qid
+     * @throws java.lang.Exception
      */
-    public void deleteQuestion(String qid) {
+    public void deleteQuestion(String qid) throws Exception {
 
         Connection con = null;
         PreparedStatement st = null;
@@ -237,18 +204,10 @@ public class QuestionDao extends DBContext {
             st = con.prepareStatement(sql);
             st.setString(1, qid);
             st.executeUpdate();
-        } catch (SQLException ex) {
-            Logger.getLogger(QuestionDao.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            throw ex;
         } finally {
-            if (con != null || st != null) {
-                //close connection before return 
-                try {
-                    st.close();
-                    con.close();
-                } catch (SQLException e) {
-                    Logger.getLogger(QuestionDao.class.getName()).log(Level.SEVERE, null, e);
-                }
-            }
+            closeConnection(con, st);
         }
     }
 
@@ -256,8 +215,9 @@ public class QuestionDao extends DBContext {
      *
      * @param q
      * @param userName
+     * @throws java.lang.Exception
      */
-    public void insertQuestion(Question q, String userName) {
+    public void insertQuestion(Question q, String userName) throws Exception {
 
         Connection con = null;
         PreparedStatement st = null;
@@ -284,18 +244,10 @@ public class QuestionDao extends DBContext {
                 aDao.insertAnswer(answer, q.getId());
             }
 
-        } catch (SQLException ex) {
-            Logger.getLogger(QuestionDao.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            throw ex;
         } finally {
-            if (con != null || st != null) {
-                //close connection before return 
-                try {
-                    st.close();
-                    con.close();
-                } catch (SQLException e) {
-                    Logger.getLogger(QuestionDao.class.getName()).log(Level.SEVERE, null, e);
-                }
-            }
+            closeConnection(con, st);
         }
     }
 
@@ -303,8 +255,9 @@ public class QuestionDao extends DBContext {
      *
      * @param length
      * @return random question id
+     * @throws java.lang.Exception
      */
-    public String generateRandomID(int length) {
+    public String generateRandomID(int length) throws Exception {
         Random rand = new Random();
         String str = "abcdefghijklmnopqrstuvwxyz";
         StringBuilder sb = new StringBuilder(length);
@@ -315,10 +268,15 @@ public class QuestionDao extends DBContext {
                 sb.append(str.charAt(rand.nextInt(str.length())));
             }
             rs = sb.toString();
-            if (!checkQuestionId(rs)) {
-                //to check id is unique in database
-                break;
+            try {
+                if (!checkQuestionId(rs)) {
+                    //to check id is unique in database
+                    break;
+                }
+            } catch (Exception e) {
+                throw e;
             }
+
         }
         return rs;
     }

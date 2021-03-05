@@ -5,6 +5,7 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!DOCTYPE html>
 <html>
     <head>
@@ -16,8 +17,9 @@
     <body>
         <div class="container">
             <%@include file="header.jsp"%>
+            <c:set var="mess" scope="request" value="${requestScope.mess}"/>
             <div class="content-container">
-                <form id="make-form" class="form" method="post" action="../J3LP0001/make-quiz">
+                <form id="make-form" class="form" method="post" action="make-quiz">
                     <div class="form-item">
                         <label for="question" class="form-label">Question: </label>
                         <textarea id="question" required name="question">${param.question}</textarea>
@@ -61,12 +63,11 @@
                         </div>
                     </div>                      
                     <div class="mess">
-                       <input id="btn-save" class="button save-btn" type="submit" value="Save"/> 
-                       <h5 id="mess"></h5>  
+                        <input id="btn-save" class="button save-btn" type="submit" value="Save"/> 
+                        <h5 id="mess">${mess}</h5>  
                     </div>                   
                 </form>
             </div>
         </div>
-        <script src="js/makeQuiz.js" type="text/javascript"></script>
     </body>
 </html>

@@ -7,7 +7,10 @@ package controller;
 
 import dao.QuestionDao;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -71,7 +74,8 @@ public class ManageQuizServlet extends HttpServlet {
             request.setAttribute("questions", list);
             request.getRequestDispatcher("view/manageQuiz.jsp").forward(request, response);
 
-        } catch (IOException e) {
+        } catch (Exception e) {
+            request.setAttribute("error", e);
             request.getRequestDispatcher("view/error.jsp").forward(request, response);
         }
 

@@ -6,6 +6,7 @@
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>  
 <!DOCTYPE html>
 <html>
     <head>
@@ -23,7 +24,7 @@
                         <h5>${mess}</h5>  
                     </c:if> 
                 </div> 
-                <form class="form" method="post" action="../J3LP0001/register">
+                <form class="form" method="post" action="register">
                     <div class="form-item">
                         <label class="form-label" for="userName">User name:</label> 
                         <input type="text"  id="userName" name="userName" value="${param.userName}"/>
@@ -35,8 +36,16 @@
                     <div class="form-item">
                         <label class="form-label" for="type">User Type:</label> 
                         <select id="type" name="userType">
-                            <option value="true">Teacher</option>
-                            <option value="false">Student</option>
+                            <c:choose>
+                                <c:when test="${fn:contains(param.userType, 'false')}">
+                                    <option value="true">Teacher </option>
+                                    <option value="false" selected>Student</option>
+                                </c:when>
+                                <c:otherwise>
+                                    <option value="true" selected>Teacher </option>
+                                    <option value="false">Student</option>
+                                </c:otherwise>
+                            </c:choose>                          
                         </select>
                     </div>
                     <div class="form-item">

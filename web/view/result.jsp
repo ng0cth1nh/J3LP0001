@@ -33,7 +33,7 @@
                         </div>
                         <div class="infor-container">
                             <h3 class="label" >Take another test </h3>
-                            <a href="../J3LP0001/take-quiz">
+                            <a href="take-quiz">
                                 <button class="button btn-start">Start</button>
                             </a>
                         </div>

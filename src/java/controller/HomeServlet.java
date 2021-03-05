@@ -7,6 +7,9 @@ package controller;
 
 import dao.UserDao;
 import java.io.IOException;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -55,7 +58,8 @@ public class HomeServlet extends HttpServlet {
                 //user has not already exsited in session then redirect to login page
                 request.getRequestDispatcher("view/login.jsp").forward(request, response);
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
+            request.setAttribute("error", e);
             request.getRequestDispatcher("view/error.jsp").forward(request, response);
         }
     }
@@ -87,7 +91,8 @@ public class HomeServlet extends HttpServlet {
                 request.setAttribute("mess", uDao.checkUserAccount(userName, password));
                 request.getRequestDispatcher("/view/login.jsp").forward(request, response);
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
+            request.setAttribute("error", e);
             request.getRequestDispatcher("view/error.jsp").forward(request, response);
         }
     }

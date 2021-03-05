@@ -9,12 +9,9 @@ import context.DBContext;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import model.Answer;
 
 /**
@@ -27,8 +24,9 @@ public class AnswerDao extends DBContext {
      *
      * @param qid
      * @return Purpose: get all answer of corresponding question
+     * @throws java.lang.Exception
      */
-    public ArrayList<Answer> getAnswers(String qid) {
+    public ArrayList<Answer> getAnswers(String qid) throws Exception{
 
         ArrayList<Answer> list = null;
         Connection con = null;
@@ -48,19 +46,10 @@ public class AnswerDao extends DBContext {
                         rs.getString(3),
                         rs.getBoolean("isTrue")));
             }
-        } catch (SQLException ex) {
-            Logger.getLogger(AnswerDao.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            throw ex;
         } finally {
-            if (con != null || st != null || rs != null) {
-                //close connection before return 
-                try {
-                    rs.close();
-                    st.close();
-                    con.close();
-                } catch (SQLException e) {
-                    Logger.getLogger(AnswerDao.class.getName()).log(Level.SEVERE, null, e);
-                }
-            }
+            closeConnection(con, st, rs);
         }
         return list;
     }
@@ -68,8 +57,9 @@ public class AnswerDao extends DBContext {
     /**
      *
      * @param qid
+     * @throws java.lang.Exception
      */
-    public void deleteAnswer(String qid) {
+    public void deleteAnswer(String qid) throws Exception{
 
         Connection con = null;
         PreparedStatement st = null;
@@ -80,18 +70,10 @@ public class AnswerDao extends DBContext {
             st = con.prepareStatement(sql);
             st.setString(1, qid);
             st.executeUpdate();
-        } catch (SQLException ex) {
-            Logger.getLogger(AnswerDao.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            throw ex;
         } finally {
-            if (con != null || st != null) {
-                //close connection before return 
-                try {
-                    st.close();
-                    con.close();
-                } catch (SQLException e) {
-                    Logger.getLogger(AnswerDao.class.getName()).log(Level.SEVERE, null, e);
-                }
-            }
+            closeConnection(con, st);
         }
 
     }
@@ -100,8 +82,9 @@ public class AnswerDao extends DBContext {
      *
      * @param id
      * @return
+     * @throws java.lang.Exception
      */
-    public boolean checkAnswerId(String id) {
+    public boolean checkAnswerId(String id) throws Exception {
 
         boolean result = false;
         Connection con = null;
@@ -118,19 +101,10 @@ public class AnswerDao extends DBContext {
                 //loop to each item of the result set
                 result = true;
             }
-        } catch (SQLException ex) {
-            Logger.getLogger(AnswerDao.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            throw ex;
         } finally {
-            if (con != null || st != null || rs != null) {
-                //close connection before return 
-                try {
-                    rs.close();
-                    st.close();
-                    con.close();
-                } catch (SQLException e) {
-                    Logger.getLogger(AnswerDao.class.getName()).log(Level.SEVERE, null, e);
-                }
-            }
+            closeConnection(con, st, rs);
         }
         return result;
     }
@@ -139,8 +113,9 @@ public class AnswerDao extends DBContext {
      *
      * @param a
      * @param qid
+     * @throws java.lang.Exception
      */
-    public void insertAnswer(Answer a, String qid) {
+    public void insertAnswer(Answer a, String qid) throws Exception {
         Connection con = null;
         PreparedStatement st = null;
         try {
@@ -161,18 +136,10 @@ public class AnswerDao extends DBContext {
             st.setString(3, a.getContent());
             st.setBoolean(4, a.isIsTrue());
             st.executeUpdate();
-        } catch (SQLException ex) {
-            Logger.getLogger(AnswerDao.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            throw ex;
         } finally {
-            if (con != null || st != null) {
-                //close connection before return 
-                try {
-                    st.close();
-                    con.close();
-                } catch (SQLException e) {
-                    Logger.getLogger(AnswerDao.class.getName()).log(Level.SEVERE, null, e);
-                }
-            }
+            closeConnection(con, st);
         }
     }
 
@@ -180,8 +147,9 @@ public class AnswerDao extends DBContext {
      *
      * @param lengthOfId
      * @return answer id
+     * @throws java.lang.Exception
      */
-    public String[] generateRandomIDs(int lengthOfId) {
+    public String[] generateRandomIDs(int lengthOfId) throws Exception {
         Random rand = new Random();
         String str = "abcdefghijklmnopqrstuvwxyz";
         StringBuilder sb = new StringBuilder(lengthOfId);

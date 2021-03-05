@@ -9,9 +9,6 @@ import context.DBContext;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import model.User;
 
 /**
@@ -25,8 +22,9 @@ public class UserDao extends DBContext {
      * @param userName
      * @param password
      * @return user
+     * @throws java.lang.Exception
      */
-    public User getUser(String userName, String password) {
+    public User getUser(String userName, String password) throws Exception {
 
         User user = null;
         Connection con = null;
@@ -34,7 +32,7 @@ public class UserDao extends DBContext {
         ResultSet rs = null;
 
         try {
-            String sql = "select * from [User] where [userName]= ? and [password]= ?";
+            String sql = "SELECT * FROM [User] WHERE [userName]= ? AND [password]= ?";
             con = getConnection();
             st = con.prepareStatement(sql);
             st.setString(1, userName);
@@ -48,19 +46,10 @@ public class UserDao extends DBContext {
                         rs.getBoolean("isTeacher"));
             }
 
-        } catch (SQLException ex) {
-            Logger.getLogger(UserDao.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            throw ex;
         } finally {
-            if (con != null || st != null || rs != null) {
-                //close connection before return 
-                try {
-                    rs.close();
-                    st.close();
-                    con.close();
-                } catch (SQLException e) {
-                    Logger.getLogger(UserDao.class.getName()).log(Level.SEVERE, null, e);
-                }
-            }
+            closeConnection(con, st, rs);
         }
         return user;
     }
@@ -69,8 +58,9 @@ public class UserDao extends DBContext {
      *
      * @param userName
      * @return userName is existed or not
+     * @throws java.lang.Exception
      */
-    public boolean checkExist(String userName) {
+    public boolean checkUsernameExist(String userName) throws Exception {
 
         boolean result = false;
         Connection con = null;
@@ -78,7 +68,7 @@ public class UserDao extends DBContext {
         ResultSet rs = null;
 
         try {
-            String sql = "select * from [User] where [userName]= ?";
+            String sql = "SELECT * from [User] where [userName]= ?";
             con = getConnection();
             st = con.prepareStatement(sql);
             st.setString(1, userName);
@@ -87,19 +77,10 @@ public class UserDao extends DBContext {
                 //loop to each item of the result set
                 result = true;
             }
-        } catch (SQLException ex) {
-            Logger.getLogger(UserDao.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+           throw ex;
         } finally {
-            if (con != null || st != null || rs != null) {
-                //close connection before return 
-                try {
-                    rs.close();
-                    st.close();
-                    con.close();
-                } catch (SQLException e) {
-                    Logger.getLogger(UserDao.class.getName()).log(Level.SEVERE, null, e);
-                }
-            }
+            closeConnection(con, st, rs);
         }
 
         return result;
@@ -108,8 +89,9 @@ public class UserDao extends DBContext {
     /**
      * 
      * @param u 
+     * @throws java.lang.Exception 
      */
-    public void insertUser(User u) {
+    public void insertUser(User u) throws Exception{
 
         Connection con = null;
         PreparedStatement st = null;
@@ -133,18 +115,10 @@ public class UserDao extends DBContext {
             st.setString(3, u.getEmail());
             st.setBoolean(4, u.isIsTeacher());
             st.executeUpdate();
-        } catch (SQLException ex) {
-            Logger.getLogger(UserDao.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            throw ex;
         } finally {
-            if (con != null || st != null) {
-                 //close connection before return 
-                try {
-                    st.close();
-                    con.close();
-                } catch (SQLException e) {
-                    Logger.getLogger(UserDao.class.getName()).log(Level.SEVERE, null, e);
-                }
-            }
+            closeConnection(con, st);
         }
 
     }
@@ -154,9 +128,10 @@ public class UserDao extends DBContext {
      * @param username
      * @param password
      * @return check username and password
+     *  @throws java.lang.Exception 
      */
-    public String checkUserAccount(String username, String password) {
-        if (!checkExist(username)) {
+    public String checkUserAccount(String username, String password) throws Exception {
+        if (!checkUsernameExist(username)) {
             //username is incorrect then
             return "Account is incorrect!";
         } else if (getUser(username, password) == null) {

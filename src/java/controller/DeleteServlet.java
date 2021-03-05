@@ -7,6 +7,9 @@ package controller;
 
 import dao.QuestionDao;
 import java.io.IOException;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -48,7 +51,8 @@ public class DeleteServlet extends HttpServlet {
             String qid = request.getParameter("qid");
             qDao.deleteQuestion(qid);
             response.sendRedirect("manage-quiz");
-        } catch (IOException e) {
+        } catch (Exception e) {
+            request.setAttribute("error", e);
             request.getRequestDispatcher("view/error.jsp").forward(request, response);
         }
 

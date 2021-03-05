@@ -31,7 +31,7 @@ function startTimer(duration, timeDisplay) {
 
         if (duration === 0) {
             //duration equal 0 then submit result then return
-            submitResult();
+            //submitResult();
             return;
         }
 

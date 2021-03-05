@@ -10,6 +10,8 @@ import dao.QuestionDao;
 import java.io.IOException;
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -55,7 +57,7 @@ public class MakeQuizServlet extends HttpServlet {
         } catch (IOException e) {
             request.getRequestDispatcher("view/error.jsp").forward(request, response);
         }
-        
+
     }
 
     /**
@@ -69,6 +71,7 @@ public class MakeQuizServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+
         try {
             QuestionDao qDao = new QuestionDao();
             AnswerDao aDao = new AnswerDao();
@@ -86,34 +89,45 @@ public class MakeQuizServlet extends HttpServlet {
 
             ArrayList<Answer> answers = new ArrayList<>();
             //initialize array list answer
-            
-            answers.add(new Answer(aIds[0], option1, checkBoxValue(request.getParameter("op1"))));
-            answers.add(new Answer(aIds[1], option2, checkBoxValue(request.getParameter("op2"))));
-            answers.add(new Answer(aIds[2], option3, checkBoxValue(request.getParameter("op3"))));
-            answers.add(new Answer(aIds[3], option4, checkBoxValue(request.getParameter("op4"))));
-            
 
-            long millis = System.currentTimeMillis();
-            //get current time measured in milliseconds, between the current time and midnight, January 1, 1970 UTC
-            Date date = new Date(millis);
-            //init current date
-            Question q = new Question(qId, question, date, answers);
+            String op1 = request.getParameter("op1");
+            String op2 = request.getParameter("op2");
+            String op3 = request.getParameter("op3");
+            String op4 = request.getParameter("op4");
 
-            HttpSession session = request.getSession(false);
-            User user = (User) session.getAttribute("user");
+            if (checkQuatityOfCheckBox(op1, op2, op3, op4)) {
+                //check option at least 1 and maximun is 3
+                answers.add(new Answer(aIds[0], option1, checkBoxValue(op1)));
+                answers.add(new Answer(aIds[1], option2, checkBoxValue(op2)));
+                answers.add(new Answer(aIds[2], option3, checkBoxValue(op3)));
+                answers.add(new Answer(aIds[3], option4, checkBoxValue(op4)));
 
-            qDao.insertQuestion(q, user.getUserName());
-            
-            response.sendRedirect("manage-quiz");
-            
-        } catch (IOException e) {
+                long millis = System.currentTimeMillis();
+                //get current time measured in milliseconds, between the current time and midnight, January 1, 1970 UTC
+                Date date = new Date(millis);
+                //init current date
+                Question q = new Question(qId, question, date, answers);
+
+                HttpSession session = request.getSession(false);
+                User user = (User) session.getAttribute("user");
+
+                qDao.insertQuestion(q, user.getUserName());
+
+                response.sendRedirect("manage-quiz");
+            } else {
+                request.setAttribute("mess", "You have to check at least 1 option and maximum of 3 options");
+                request.getRequestDispatcher("/view/makeQuiz.jsp").forward(request, response);
+            }
+
+        } catch (Exception e) {
+            request.setAttribute("error", e);
             request.getRequestDispatcher("view/error.jsp").forward(request, response);
         }
 
     }
 
     /**
-     * 
+     *
      * @param value
      * @return boolean
      */
@@ -125,6 +139,27 @@ public class MakeQuizServlet extends HttpServlet {
             //value of checkbox is not null checked then return true
             return value.equals("true");
         }
+    }
+
+    public boolean checkQuatityOfCheckBox(String op1, String op2, String op3, String op4) {
+        int num = 0;
+        if (checkBoxValue(op1)) {
+            //check checkbox 1 is checked or not
+            ++num;
+        }
+        if (checkBoxValue(op2)) {
+             //check checkbox 2 is checked or not
+            ++num;
+        }
+        if (checkBoxValue(op3)) {
+             //check checkbox 3 is checked or not
+            ++num;
+        }
+        if (checkBoxValue(op4)) {
+             //check checkbox 4 is checked or not
+            ++num;
+        }
+        return num >= 1 && num <= 3;
     }
 
     /**

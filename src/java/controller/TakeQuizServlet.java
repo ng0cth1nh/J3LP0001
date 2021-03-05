@@ -7,8 +7,11 @@ package controller;
 
 import dao.QuestionDao;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -64,8 +67,7 @@ public class TakeQuizServlet extends HttpServlet {
             } else {
                 //the number parameter is requested then return to taking quiz page
                 int number = Integer.parseInt(request.getParameter("number"));
-                HttpSession session = request.getSession(false);
-                User user = (User) session.getAttribute("user");
+                
 
                 duration = number * 60 * 1000 + DELAYTIME;
                 //set duration time measured in milliseconds is the limit time to take all quizzes for user
@@ -80,7 +82,8 @@ public class TakeQuizServlet extends HttpServlet {
                 startTime = System.currentTimeMillis();
                 //start time when user taking the quiz is ticked
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
+            request.setAttribute("error", e);
             request.getRequestDispatcher("view/error.jsp").forward(request, response);
         }
     }
@@ -101,11 +104,11 @@ public class TakeQuizServlet extends HttpServlet {
             System.out.println("result=" + result);
             long currentTime = System.currentTimeMillis();
             //get current time when user sent result of quiz to server
-            long takingTime = currentTime - startTime;
+            long takingTime = (currentTime - startTime);
             //takingTime is the time of the user taking all of the quizzes
             if (takingTime > duration) {
                 //takingTime is greater than duration so that result is not accepted.
-                request.setAttribute("mess", "You treated!");
+                request.setAttribute("mess", "Your result has been rejected!");
                 request.getRequestDispatcher("view/result.jsp").forward(request, response);
             } else {
                 float score = (float) (calculateScore(result.split(" ")) * 10.0);
@@ -122,7 +125,8 @@ public class TakeQuizServlet extends HttpServlet {
                 request.setAttribute("isPass", isPass);
                 request.getRequestDispatcher("view/result.jsp").forward(request, response);
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
+            request.setAttribute("error", e);
             request.getRequestDispatcher("view/error.jsp").forward(request, response);
         }
 

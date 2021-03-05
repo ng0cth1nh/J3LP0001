@@ -12,12 +12,12 @@
     <body>
         <header class="header-container">
             <ul class="header">
-                <li class="header-item"><a href="../J3LP0001/home">Home</a></li>
-                <li class="header-item"><a href="../J3LP0001/take-quiz">Take Quiz</a></li>
-                <li class="header-item"><a href="../J3LP0001/make-quiz">Make Quiz</a></li>
-                <li class="header-item"><a href="../J3LP0001/manage-quiz">Manage Quiz</a></li>
+                <li class="header-item"><a href="home">Home</a></li>
+                <li class="header-item"><a href="take-quiz">Take Quiz</a></li>
+                <li class="header-item"><a href="make-quiz">Make Quiz</a></li>
+                <li class="header-item"><a href="manage-quiz">Manage Quiz</a></li>
             <c:if test="${user!=Empty}">
-                <li class="header-item"><a href="../J3LP0001/logout">Log out</a></li>
+                <li class="header-item"><a href="logout">Log out</a></li>
             </c:if>
             </ul>
         </header>

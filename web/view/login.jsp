@@ -24,7 +24,7 @@
                         <h5>${mess}</h5>  
                     </c:if> 
                 </div>                  
-                <form class="form" method="post" action="../J3LP0001/home">
+                <form class="form" method="post" action="home">
                     <div class="form-item">
                         <label class="form-label" for="userName">User name:</label> 
                         <input type="text" required id="userName" name="userName" value="${param.userName}"/>
@@ -35,7 +35,7 @@
                     </div>
                     <div class="form-item form-button">
                         <input type="submit" id="login-btn" class="button" value="Sign in"/>
-                        <a href="../J3LP0001/register" id="register" class="form-label">Register</a>
+                        <a href="register" id="register" class="form-label">Register</a>
                     </div>
                 </form>
             </div> 
