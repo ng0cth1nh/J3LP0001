@@ -13,26 +13,25 @@
         <title>Take Quiz</title>
         <link href="css/take-quiz.css" rel="stylesheet" type="text/css"/>        
         <link href="css/base.css" rel="stylesheet" type="text/css"/>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     </head>
     <body>
         <div class="container">
             <c:set var="user" scope="session" value="${sessionScope.user}"/>
-            <c:set var="questions" scope="request" value="${requestScope.questions}"/>
-            <c:set var="quantityOfQues" scope="request" value="${requestScope.quantityOfQues}"/>
+            <c:set var="questions" scope="session" value="${sessionScope.questions}"/>
+            <c:set var="labeltime" scope="request" value="${requestScope.labeltime}"/>
             <%@include file="header.jsp"%>
             <div class="content-container">
                 <h3 class="label">Welcome </h3> 
-                <span class="infor">${sessionScope.user.getUserName()}</span> 
+                <span class="infor">${user.getUserName()}</span> 
                 <div id="timer">
                     <h3 class="label">Time remaining</h3>
-                    <span id="time">${quantityOfQues}:00</span>
+                    <span id="time">${labeltime}</span>
                 </div>
                 <div id="answer-container">                    
                     <c:forEach items="${questions}" var="q">
                         <div class="ques" id="${q.getId()}">
                             <h3 class="ques-title">${q.getContent()}</h3> 
-                            <c:set var="answers" scope="request" value="${q.getAnswers()}"/>
+                            <c:set var="answers" value="${q.getAnswers()}"/>
                             <c:forEach items="${answers}" var="a">
                                 <input name="${q.getId()}" class="op"
                                        id="${a.getId()}" 
@@ -47,7 +46,7 @@
                 </div>
             </div>
             <form id="result-form" type="hidden" method="post" action="take-quiz">
-                <input id="result" name="result" type="hidden"/>                            
+                <input id="result" name="result" type="hidden"/> 
             </form>  
         </div>
         <script src="js/takeQuiz.js" type="text/javascript"></script>

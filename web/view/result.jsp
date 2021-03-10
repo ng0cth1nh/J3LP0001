@@ -40,7 +40,7 @@
                     </div>       
                 </c:when>
                 <c:otherwise>
-                    <h3 class="mess mess-error">You treated!</h3>
+                    <h3 class="mess mess-error">${requestScope.mess}</h3>
                 </c:otherwise>
             </c:choose> 
         </div>

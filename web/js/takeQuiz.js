@@ -1,10 +1,11 @@
 
 const questions = document.querySelectorAll(".ques");
 const resultForm = document.getElementById("result-form");
-const timeInput = document.getElementById("timeInput");
 const result = document.getElementById("result");
 const timeDisplay = document.getElementById("time");
 const nextBtn = document.getElementById("nextBtn");
+
+
 
 let currentIndex = 1;
 //set default currentIndex is 1
@@ -31,7 +32,7 @@ function startTimer(duration, timeDisplay) {
 
         if (duration === 0) {
             //duration equal 0 then submit result then return
-            //submitResult();
+            submitResult();
             return;
         }
 
@@ -45,10 +46,10 @@ window.onload = function () {
 
     questions[0].style.display = "block";
     //display block the first question when web loaded all the resource  
-    let duration = (60 * questions.length) - 1;
+    let timelabel = timeDisplay.textContent;
+    let duration = parseInt(timelabel.substr(0, 2), 10) * 60 + parseInt(timelabel.substr(3, 5), 10);
+    startTimer(duration - 1, timeDisplay);
     //duration is decreased to 1 cause the timedisplay has already displayed the first second
-    startTimer(duration, timeDisplay);
-    //start timer 
 };
 
 function getResult() {
@@ -69,6 +70,7 @@ function submitResult() {
     result.value = getResult();
     //assign value of result of all checkbox input to result input of
     //hidden form the submit to server
+
     resultForm.submit();
 
 }
@@ -85,8 +87,10 @@ nextBtn.onclick = function () {
             //then change text of nextBtn to finish
             nextBtn.textContent = "Finish";
         }
+
         questions[currentIndex - 1].style.display = "none";
         //set style of the previous question div to none
+
         questions[currentIndex].style.display = "block";
         //set style of the next question div to block
         ++currentIndex;
