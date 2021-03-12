@@ -71,52 +71,59 @@ public class TakeQuizServlet extends HttpServlet {
                 //the number parameter is requested then return to taking quiz page
                 int number = Integer.parseInt(request.getParameter("number"));
                 if (number > qDao.countQuestion()) {
-                   //return error when number of question over total question in database 
-                    request.getRequestDispatcher("view/error404.jsp").forward(request, response);
+                    //return mess when number of question over total question in database 
+                    request.setAttribute("mess", "Please enter number of question under " + qDao.countQuestion());
+                    request.getRequestDispatcher("view/enterNumQuiz.jsp").forward(request, response);
                 } else {
-                    HttpSession session = request.getSession(false);
-                    User u = (User) session.getAttribute("user");
-                    //set duration time measured in milliseconds is the limit time to take all quizzes for user
-                    //with that number of question
+                HttpSession session = request.getSession(false);
+                User u = (User) session.getAttribute("user");
+                //set duration time measured in milliseconds is the limit time to take all quizzes for user
+                //with that number of question
 
-                    if (session.getAttribute("duration") == null
-                            || session.getAttribute("duration") != null
-                            && number != this.questions.get(u.getUserName()).size()) {
-                        //set all brand new questions when user take quiz for the first time
-                        //or user request a difference quantity of question
-                                          
-                        long startTime = System.currentTimeMillis();
-                        //start time when user taking the quiz is ticked
+                if (session.getAttribute("duration") == null
+                        || session.getAttribute("duration") != null
+                        && number != this.questions.get(u.getUserName()).size()) {
+                    //set all brand new questions when user take quiz for the first time
+                    //or user request a difference quantity of question
 
-                        this.startTimes.put(u.getUserName(), startTime);
-                        this.questions.put(u.getUserName(), qDao.getQuestions(number));
-                        session.setAttribute("questions", this.questions.get(u.getUserName()));
-                        //request.setAttribute("questions", this.questions.get(u.getUserName()));
+                    long startTime = System.currentTimeMillis();
+                    //start time when user taking the quiz is ticked
 
-                        long duration = this.questions.get(u.getUserName()).size() * 60 * 1000;
+                    this.startTimes.put(u.getUserName(), startTime);
+                    this.questions.put(u.getUserName(), qDao.getQuestions(number));
 
-                        session.setAttribute("duration", duration);
-                        //set duration time for all questions
-                        request.setAttribute("labeltime", formartTimeLable(duration));
-                        //set label time
-                        request.getRequestDispatcher("view/takeQuiz.jsp").forward(request, response);
-                    } else {
-                        //when user reload page the game state have to fixed.
-                        
-                        long duration = (Long) session.getAttribute("duration");
+                    //request.setAttribute("questions", this.questions.get(u.getUserName()));
+                    long duration = this.questions.get(u.getUserName()).size() * 60 * 1000;
 
-                        long currentTime = System.currentTimeMillis();
+                    session.setAttribute("duration", duration);
+                    //set duration time for all questions
+                    session.setAttribute("questions", this.questions.get(u.getUserName()));
+                    request.setAttribute("labeltime", formartTimeLable(duration));
+                    //set label time
+                    request.getRequestDispatcher("view/takeQuiz.jsp").forward(request, response);
+                } else {
+                    //when user reload page the game state have to fixed.
 
-                        long takedTime = currentTime - this.startTimes.get(u.getUserName()) - DELAYTIME;
-                        //calculate the time has been taked before and minus the delaytime.
-                        
-                        long remainTime = duration - takedTime;
-                        //calculate the remain time of user
-                       
+                    long duration = (Long) session.getAttribute("duration");
+
+                    long currentTime = System.currentTimeMillis();
+
+                    long takedTime = currentTime - this.startTimes.get(u.getUserName()) - DELAYTIME;
+                    //calculate the time has been taked before and minus the delaytime.
+
+                    long remainTime = duration - takedTime;
+                    //calculate the remain time of user
+
+                    if (remainTime > 0) {
                         request.setAttribute("labeltime", formartTimeLable(remainTime));
                         //set label time
                         request.getRequestDispatcher("view/takeQuiz.jsp").forward(request, response);
+                    } else {
+                        //takingTime is greater than duration so that result is not accepted.
+                        request.setAttribute("mess", "Your result has been rejected!");
+                        request.getRequestDispatcher("view/result.jsp").forward(request, response);
                     }
+                }
                 }
             }
         } catch (Exception e) {
@@ -167,7 +174,7 @@ public class TakeQuizServlet extends HttpServlet {
                 //is pass or not
                 request.setAttribute("isPass", isPass);
                 request.getRequestDispatcher("view/result.jsp").forward(request, response);
-            }          
+            }
             session.removeAttribute("duration");
         } catch (Exception e) {
             request.setAttribute("error", e);

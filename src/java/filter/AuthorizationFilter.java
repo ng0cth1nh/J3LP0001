@@ -37,7 +37,7 @@ public class AuthorizationFilter implements Filter {
         User user = (User) session.getAttribute("user");
         String url = req.getRequestURI();
 
-        if (url.contains("make") || url.contains("manage")) {
+        if (url.contains("make") || url.contains("manage") || url.contains("delete")) {
             //user access to make-quiz or manage-quiz
             if (user.isIsTeacher()) {
                 //user has role is teacher is allowed to access

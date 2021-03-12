@@ -36,7 +36,7 @@ public class AuthenticationFilter implements Filter {
 
         String url = req.getRequestURI();
 
-        if (url.contains("quiz")) {
+        if (url.contains("quiz") || url.contains("delete")) {
             //if user access to take-quiz or make-quiz or manage-quiz
             User user = (User) session.getAttribute("user");
             if (user == null) {

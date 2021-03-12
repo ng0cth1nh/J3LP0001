@@ -81,6 +81,7 @@
         <url-pattern>/take-quiz/*</url-pattern>
         <url-pattern>/make-quiz/*</url-pattern>
         <url-pattern>/manage-quiz/*</url-pattern>
+        <url-pattern>/delete/*</url-pattern>
     </filter-mapping>
     <filter>
         <filter-name>AuthorizationFilter</filter-name>
@@ -90,11 +91,11 @@
         <filter-name>AuthorizationFilter</filter-name>
         <url-pattern>/make-quiz/*</url-pattern>
         <url-pattern>/manage-quiz/*</url-pattern>
+        <url-pattern>/delete/*</url-pattern>
     </filter-mapping>
     <welcome-file-list>
         <welcome-file>home</welcome-file>
-    </welcome-file-list>
-   
+    </welcome-file-list> 
     <session-config>
         <session-timeout>
             30

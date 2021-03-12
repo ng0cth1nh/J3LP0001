@@ -68,3 +68,6 @@ and open the template in the editor.
 .btn-start{
     margin-left: 10px !important;
 }
+.mess-error{
+    margin: 25px 0px !important;
+}

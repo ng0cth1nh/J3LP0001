@@ -17,6 +17,7 @@
     <body>
         <div class="container">
             <c:set var="user" scope="session" value="${sessionScope.user}"/>
+            <c:set var="mess" scope="request" value="${requestScope.mess}"/>
             <%@include file="header.jsp"%>
             <div class="content-container">
                 <h3 class="label">Welcome </h3> 
@@ -30,6 +31,9 @@
                         <input class="button" id="number-button" type="submit" value="Start"/>
                     </div>                        
                 </form>
+                <c:if test="${mess!=Empty}">
+                    <h5 class="mess mess-error">${mess}</h5>  
+                </c:if>   
             </div>
         </div> 
     </body>
