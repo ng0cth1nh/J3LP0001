@@ -69,5 +69,6 @@
                 </form>
             </div>
         </div>
+        <script src="js/makeQuiz.js" type="text/javascript"></script>
     </body>
 </html>
