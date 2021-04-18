@@ -2,7 +2,7 @@
 <Context path="/J3LP0001">
   <Environment name="serverName" type="java.lang.String" value="localhost"/>
   <Environment name="dbName" type="java.lang.String" value="J3LP0001"/>
-  <Environment name="portNumber" type="java.lang.String" value="1433"/>
+  <Environment name="port" type="java.lang.String" value="1433"/>
   <Environment name="username" type="java.lang.String" value="sa"/>
   <Environment name="password" type="java.lang.String" value="meomeo123"/>
 </Context>
