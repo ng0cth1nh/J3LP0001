@@ -24,7 +24,7 @@ public class DBContext {
 
     InitialContext init;
     Context context;
-    String dbName, serverName, portNumber, username, password;
+    String dbName, serverName, port, username, password;
 
     public Connection getConnection() {
         Connection con = null;
@@ -34,14 +34,14 @@ public class DBContext {
 
             serverName = context.lookup("serverName").toString();
             dbName = context.lookup("dbName").toString();
-            portNumber = context.lookup("portNumber").toString();
+            port = context.lookup("port").toString();
             username = context.lookup("username").toString();
             password = context.lookup("password").toString();
 
             StringBuilder url = new StringBuilder("jdbc:sqlserver://");
             url.append(serverName);
             url.append(":");
-            url.append(portNumber);
+            url.append(port);
             url.append(";databaseName=");
             url.append(dbName);
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
